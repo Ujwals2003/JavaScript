@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <h1>RCB MATCH TICKET FORM</h1>
+    <form action="" methode="post">
+        <label for="name">UserName</label>
+        <input type="text" id="name" name="UserName">
+        <br><br>
+
+        <label for="email">Email ID:</label>
+        <input type="email" id="email" name="Email" required>
+        <br><br>
+
+        <label for="Gender">Gender:</label><br>
+        <input type="radio" id="male" name="Gender" value="Male">
+        <label for="male">Male</label>
+        <br>
+        <input type="radio" id="female" name="Gender" value="Female">
+        <label for="Female">Female</label>
+        <br>
+        <input type="radio" id="Others" name="Gender" value="Others">
+        <label for="Others">Others</label>
+        <br>
+        <label for="date">Match Date:</label>
+        <input type="date" id="date" name="MatchDate" required>
+        <br><br>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="PhoneNumber" pattern="[0-9]{10}" required>
+        <br><br>
+
+        <label for="tickets">Number of Tickets:</label>
+        <input type="number" id="tickets" name="Tickets" min="1" max="10" required>
+        <br><br>
+        
+        <label>Select your preferred stand:</label><br>
+        <input type="checkbox" id="north" name="Stand" value="North Stand">
+        <label for="north">North Stand</label><br>
+
+
+        <input type="checkbox" id="south" name="Stand" value="South Stand">
+        <label for="south">South Stand</label><br>
+
+        <input type="checkbox" id="VIP" name="stand" value="VIP">
+        <label for="VIP">VIP</label>
+        <br><br>
+
+        <label for="IdProof">IdProof:</label><br>
+        <input type="file" id="IdProof" name="IdProef"><br><br>
+
+        <input type="checkbox" id="terms" name="terms">
+        <label for="terms">I agree to the terms & conditions</label><br><br>
+        <label for="Home Ground">Home Ground</label>
+        <select name="Country" id="1">
+            <option value="">Select Home Ground</option>
+            <option value="">Banguru</option>
+            <option value="">Punjab</option>
+            <option value="">Kholkata</option>
+            <option value="">Mumbahi</option>
+            <option value="">Chennai</option>
+
+
+
+        </select>
+
+        <input type="submit" value="Book Now">
+
+    </form>
+    
+</body>
+</html>
