@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Copier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #efe9e9;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+        button {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: 1px solid ;
+            border-radius: 3px;
+            background-color: ;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button onclick="copyCode('lab1')">1</button>
+        <button onclick="copyCode('lab2')">2</button>
+        <button onclick="copyCode('lab3')">3</button>
+        <button onclick="copyCode('lab4')">4</button>
+        <button onclick="copyCode('lab5')">5</button>
+        <button onclick="copyCode('lab6')">6</button>
+        <button onclick="copyCode('lab7')">7</button>
+        <button onclick="copyCode('lab8')">8</button>
+        <button onclick="copyCode('lab9')">9</button>
+        <button onclick="copyCode('lab10')">10</button>
+    </div>
+
+    <script>
+        const codes = {
+            lab1: `import csv
+with open('lab.csv','r') as f:
+    reader = csv.reader(f)
+    your_list = list(reader)
+    if your_list:
+        num_attributes = len(your_list[0])-1
+        h=['0']*num_attributes
+        print(h)
+    for i in your_list:
+        print(i)
+        if i[-1] == 'yes':
+            j = 0
+            for x in i[:-1]:
+                if x != h[j] and h[j] == '0':
+                    h[j] = x
+                elif x != h[j] and h[j] != '0':
+                    h[j]='?'
+                j += 1
+            print(h)
+    print("most specific hypothesis is")
+    print(h)`,
+
+            lab2: `import csv
+with open("lab.csv") as f:
+    csv_file = csv.reader(f)
+    data = list(csv_file)
+    specific = data[1][:-1]
+    general = [['?' for _ in range(len(specific))] for _ in range(len(specific))]
+    for i in data[1:]:
+        if i[-1] == "Yes":
+            for j in range(len(specific)):
+                if i[j] != specific[j]:
+                    specific[j] = "?"
+                    general[j][j] = "?"
+        elif i[-1] == "No":
+            for j in range(len(specific)):
+                if i[j] != specific[j]:
+                    general[j][j] = specific[j]
+                else:
+                    general[j][j] = "?"
+        print("\\nStep " + str(data.index(i)) + " of Candidate Elimination Algorithm")
+        print("Specific hypothesis: ", specific)
+        print("General hypothesis: ", general)
+    gh = []
+    for i in general:
+        for j in i:
+            if j != '?':
+                gh.append(i)
+                break
+    print("\\nFinal Specific hypothesis:\\n", specific)
+    print("\\nFinal General hypothesis:\\n", gh)`,
+
+            lab3: `import math
+import pandas as pd
+from operator import itemgetter
+
+class DecisionTree:
+    def __init__(self, df, target, positive, parent_val=None, parent=None):
+        self.data = df
+        self.target = target
+        self.positive = positive
+        self.parent_val = parent_val
+        self.parent = parent
+        self.childs = []
+        self.decision = None
+
+    def _get_entropy(self, data):
+        p = sum(data[self.target] == self.positive)
+        n = data.shape[0] - p
+        p_ratio = p / (p + n) if (p + n) != 0 else 0
+        n_ratio = 1 - p_ratio
+        entropy_p = -p_ratio * math.log2(p_ratio) if p_ratio != 0 else 0
+        entropy_n = -n_ratio * math.log2(n_ratio) if n_ratio != 0 else 0
+        return entropy_p + entropy_n
+
+    def _get_gain(self, feat):
+        avg_info = 0
+        for val in self.data[feat].unique():
+            subset = self.data[self.data[feat] == val]
+            avg_info += self._get_entropy(subset) * len(subset) / self.data.shape[0]
+        return self._get_entropy(self.data) - avg_info
+
+    def _get_splitter(self):
+        self.splitter = max(self.gains, key=itemgetter(1))[0]
+
+    def update_nodes(self):
+        self.features = [col for col in self.data.columns if col != self.target]
+        self.entropy = self._get_entropy(self.data)
+        if self.entropy != 0:
+            self.gains = [(feat, self._get_gain(feat)) for feat in self.features]
+            self._get_splitter()
+            residual_columns = [k for k in self.data.columns if k != self.splitter]
+            for val in self.data[self.splitter].unique():
+                df_tmp = self.data[self.data[self.splitter] == val][residual_columns]
+                tmp_node = DecisionTree(df_tmp, self.target, self.positive, val, self.splitter)
+                tmp_node.update_nodes()
+                self.childs.append(tmp_node)
+        else:
+            self.decision = self.data[self.target].iloc[0]
+
+def print_tree(n, level=0):
+    if n.parent is not None:
+        indent = " " * level
+        decision = f"(Decision: {n.decision})" if n.decision is not None else ""
+        print(f"{indent}{n.parent}: {n.parent_val} {decision}")
+    for child in n.childs:
+        if child:
+            print_tree(child, level + 1)
+
+df = pd.read_csv('Play Tennis.csv')
+dt = DecisionTree(df, 'Play', 'Yes')
+dt.update_nodes()
+print_tree(dt)`,
+
+            lab4: `import numpy as np
+
+X = np.array(([2, 9], [1, 5], [3, 6]), dtype=float)
+y = np.array(([92], [86], [89]), dtype=float)
+
+X = X / np.amax(X, axis=0)
+y = y / 100
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def derivatives_sigmoid(x):
+    return x * (1 - x)
+
+epoch = 5000
+lr = 0.1
+inputlayer_neurons = 2
+hiddenlayer_neurons = 3
+output_neurons = 1
+
+wh = np.random.uniform(size=(inputlayer_neurons, hiddenlayer_neurons))
+bh = np.random.uniform(size=(1, hiddenlayer_neurons))
+wout = np.random.uniform(size=(hiddenlayer_neurons, output_neurons))
+bout = np.random.uniform(size=(1, output_neurons))
+
+for i in range(epoch):
+    hinpl = np.dot(X, wh)
+    hinp = hinpl + bh
+    hlayer_act = sigmoid(hinp)
+    outpl = np.dot(hlayer_act, wout)
+    out = outpl + bout
+    output = sigmoid(out)
+    E_out = y - output
+    doutput = derivatives_sigmoid(output)
+    d_hiddenlayer = derivatives_sigmoid(hlayer_act)
+    dwh = np.dot(X.T, (2 * E_out * doutput))
+    dbh = np.sum(2 * E_out * doutput, axis=0, keepdims=True)
+    dwout = np.dot(hlayer_act.T, (2 * E_out * doutput))
+    dbout = np.sum(2 * E_out * doutput, axis=0, keepdims=True)
+    wh += dwh * lr
+    bh += dbh * lr
+    wout += dwout * lr
+    bout += dbout * lr
+
+print("Training complete!")
+print("Weights between input and hidden layer: ", wh)
+print("Bias for hidden layer: ", bh)
+print("Weights between hidden layer and output: ", wout)
+print("Bias for output layer: ", bout)`,
+
+            lab5: `import numpy as np
+import matplotlib.pyplot as plt
+
+dataset = np.array([[2.5, 2.4], [0.5, 0.7], [2.2, 2.9], [1.9, 2.2], [3.1, 3.0], [2.3, 2.7], [2.0, 1.6], [1.0, 1.1], [1.5, 1.6], [1.1, 0.9]])
+dataset -= np.mean(dataset, axis=0)
+cov_matrix = np.cov(dataset.T)
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+sorted_indices = np.argsort(eigenvalues)[::-1]
+eigenvectors = eigenvectors[:, sorted_indices]
+eigenvalues = eigenvalues[sorted_indices]
+transformed_data = np.dot(dataset, eigenvectors)
+
+fig = plt.figure(figsize=(12, 6))
+ax1 = fig.add_subplot(121)
+ax1.scatter(dataset[:, 0], dataset[:, 1])
+ax1.set_title('Original Data')
+ax2 = fig.add_subplot(122)
+ax2.scatter(transformed_data[:, 0], transformed_data[:, 1])
+ax2.set_title('Transformed Data')
+plt.show()`,
+
+            lab6: `import numpy as np
+
+def kmeans(X, k, num_iters):
+    centroids = X[np.random.choice(X.shape[0], k, replace=False)]
+    for _ in range(num_iters):
+        distances = np.linalg.norm(X[:, np.newaxis] - centroids, axis=2)
+        labels = np.argmin(distances, axis=1)
+        new_centroids = np.array([X[labels == i].mean(axis=0) for i in range(k)])
+        if np.all(centroids == new_centroids):
+            break
+        centroids = new_centroids
+    return centroids, labels
+
+X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]])
+k = 2
+num_iters = 100
+
+centroids, labels = kmeans(X, k, num_iters)
+print("Centroids:\n", centroids)
+print("Labels:\n", labels)`,
+
+            lab7: `import numpy as np
+
+def dbscan(X, eps, min_samples):
+    labels = np.full(X.shape[0], -1)
+    cluster_id = 0
+    for point_idx in range(X.shape[0]):
+        if labels[point_idx] != -1:
+            continue
+        neighbors = np.linalg.norm(X - X[point_idx], axis=1) < eps
+        if np.sum(neighbors) < min_samples:
+            labels[point_idx] = -1
+            continue
+        labels[point_idx] = cluster_id
+        cluster = [point_idx]
+        while cluster:
+            current_point = cluster.pop(0)
+            neighbors = np.linalg.norm(X - X[current_point], axis=1) < eps
+            if np.sum(neighbors) >= min_samples:
+                for i in np.where(neighbors)[0]:
+                    if labels[i] == -1:
+                        labels[i] = cluster_id
+                        cluster.append(i)
+                    elif labels[i] == -1:
+                        labels[i] = cluster_id
+        cluster_id += 1
+    return labels
+
+X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]])
+eps = 1.5
+min_samples = 2
+
+labels = dbscan(X, eps, min_samples)
+print("Cluster Labels:\n", labels)`,
+
+            lab8: `import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_decision_boundary(X, y, model):
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01), np.arange(y_min, y_max, 0.01))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    plt.contourf(xx, yy, Z, alpha=0.8)
+    plt.scatter(X[:, 0], X[:, 1], c=y, edgecolor='k', marker='o')
+    plt.title('Decision Boundary')
+    plt.show()
+
+from sklearn.svm import SVC
+X = np.array([[1, 2], [2, 3], [3, 4], [4, 5]])
+y = np.array([0, 0, 1, 1])
+model = SVC(kernel='linear')
+model.fit(X, y)
+plot_decision_boundary(X, y, model)`,
+
+            lab9: `import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+plt.figure(figsize=(8, 6))
+for i in np.unique(y):
+    plt.scatter(X_pca[y == i, 0], X_pca[y == i, 1], label=iris.target_names[i])
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('PCA of Iris Dataset')
+plt.legend()
+plt.show()`,
+
+            lab10: `import numpy as np
+from sklearn.neural_network import MLPClassifier
+
+X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]])
+y = np.array([0, 1, 0, 1, 0])
+
+clf = MLPClassifier(hidden_layer_sizes=(5,), max_iter=1000, random_state=1)
+clf.fit(X, y)
+
+print("Weights:\n", clf.coefs_)
+print("Biases:\n", clf.intercepts_)`
+        };
+
+        function copyCode(key) {
+            navigator.clipboard.writeText(codes[key])
+                .catch(err => console.error('Failed to copy code: ', err));
+        }
+    </script>
+</body>
+</html>
+
+
